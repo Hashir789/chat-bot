@@ -404,13 +404,14 @@ body {
 .input-box {
   position: relative;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 12px;
   background-color: #ffffff;
   border-radius: 24px;
   border: 1px solid #e5e7eb;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
+  padding: 4px 4px 4px 0;
 }
 
 .app-container.dark .input-box {
@@ -441,6 +442,7 @@ body {
   overflow-y: auto;
   min-height: 24px;
   font-family: inherit;
+  align-self: center;
 }
 
 .app-container.dark .input-textarea {
@@ -456,8 +458,7 @@ body {
 }
 
 .input-send-button {
-  margin-bottom: 8px;
-  margin-right: 8px;
+  margin-right: 4px;
   padding: 8px;
   border-radius: 8px;
   background-color: #e5e7eb;
@@ -467,6 +468,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .app-container.dark .input-send-button {
