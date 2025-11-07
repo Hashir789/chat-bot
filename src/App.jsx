@@ -32,11 +32,11 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
-    // Check system preference or localStorage
+    // Check localStorage first, otherwise default to light mode
     if (localStorage.getItem('darkMode') !== null) {
       return localStorage.getItem('darkMode') === 'true';
     }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return false; // Default to light mode
   });
 
   useEffect(() => {

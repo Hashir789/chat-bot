@@ -1,17 +1,10 @@
-import { Menu, Plus, Moon, Sun } from 'lucide-react';
+import { Plus, Moon, Sun } from 'lucide-react';
 
 const Header = ({ onNewChat, darkMode, setDarkMode }) => {
   return (
     <header className="header">
       <div className="header-content">
         <div className="header-left">
-          <button
-            onClick={onNewChat}
-            className="header-button"
-            aria-label="New Chat"
-          >
-            <Menu className="header-icon" />
-          </button>
           <h1 className="header-title">
             YBA
           </h1>
