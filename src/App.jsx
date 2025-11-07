@@ -31,6 +31,7 @@ const getBotResponse = (userMessage) => {
 function App() {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(null);
   const [darkMode, setDarkMode] = useState(() => {
     // Check localStorage first, otherwise default to light mode
     if (localStorage.getItem('darkMode') !== null) {
@@ -62,13 +63,83 @@ function App() {
   const handleNewChat = () => {
     setMessages([]);
     setIsTyping(false);
+    setUploadedFile(null);
+  };
+
+  const handleFileUpload = (file) => {
+    if (!file) return;
+    
+    // Allowed file types: PDF, Word (.doc, .docx), Excel (.xls, .xlsx)
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ];
+    
+    // Also check by file extension as fallback
+    const fileName = file.name.toLowerCase();
+    const validExtension = fileName.endsWith('.pdf') || 
+                          fileName.endsWith('.doc') || 
+                          fileName.endsWith('.docx') ||
+                          fileName.endsWith('.xls') ||
+                          fileName.endsWith('.xlsx');
+    
+    if (!allowedTypes.includes(file.type) && !validExtension) {
+      const errorMessage = { 
+        text: 'Please upload a PDF, Word (.doc, .docx), or Excel (.xls, .xlsx) file.', 
+        isUser: false 
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+      return;
+    }
+
+    // Determine file type for display
+    let fileType = 'file';
+    if (file.type === 'application/pdf' || fileName.endsWith('.pdf')) {
+      fileType = 'PDF';
+    } else if (file.type.includes('word') || fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
+      fileType = 'Word document';
+    } else if (file.type.includes('excel') || file.type.includes('spreadsheet') || fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
+      fileType = 'Excel spreadsheet';
+    }
+
+    // Store file info
+    setUploadedFile({
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      file: file
+    });
+
+    // Show typing indicator
+    setIsTyping(true);
+
+    // Simulate processing delay
+    setTimeout(() => {
+      const fileSize = (file.size / 1024).toFixed(2); // Size in KB
+      
+      const botMessage = {
+        text: `I've received your ${fileType}: **${file.name}** (${fileSize} KB).\n\nWhat would you like me to do with this file? You can ask me to:\n- Summarize the content\n- Extract specific information\n- Answer questions about the document\n- Or anything else you need!`,
+        isUser: false
+      };
+      
+      setMessages((prev) => [...prev, botMessage]);
+      setIsTyping(false);
+    }, 1000 + Math.random() * 1000);
   };
 
   return (
     <div className={`app-container ${darkMode ? 'dark' : ''}`}>
       <Header onNewChat={handleNewChat} darkMode={darkMode} setDarkMode={setDarkMode} />
       <ChatWindow messages={messages} isTyping={isTyping} />
-      <InputBar onSendMessage={handleSendMessage} disabled={isTyping} />
+      <InputBar 
+        onSendMessage={handleSendMessage} 
+        onFileUpload={handleFileUpload}
+        disabled={isTyping}
+        uploadedFile={uploadedFile}
+      />
     </div>
   );
 }
